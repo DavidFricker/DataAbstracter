@@ -31,12 +31,6 @@ class DBWrapper extends \PDO implements InterfaceDatabaseWrapper {
         }
     }
 
-    public function insert($table, $data) {
-    	if(!isValidTable($table)) {
-    		return false;
-    	}
-    }
-
     public function delete($table, $where, $limit) {
         if(!isValidTable($table)) {
     		return false;
@@ -55,9 +49,85 @@ class DBWrapper extends \PDO implements InterfaceDatabaseWrapper {
     	}
     }
 
+    // https://www.youtube.com/watch?v=JGf6TP6hZXc
+    private function prepareBinding($rickross, $glue) {
+        $chunks = [];
+        foreach (array_keys($rickross) as $column) { 
+            $chunks[] = '`' . $column . '` = ?'; 
+        }
+
+        return implode($glue, $chunks);
+    }
+
+    public function insert($table, $data) {
+        if(!$this->isValidTable($table)) {
+            return false;
+        }
+
+        if (!is_array($data)) {
+            return false;
+        } 
+        
+        $bind_string = $this->prepareBinding($data, ', ');
+        $bind_values = array_values($data);
+        $query = 'INSERT `'. $table.'` SET ' . $bind_string;
+
+        return $this->run($query, $bind_values);
+    }
+    
+    public function run($query, $bind=[]) {
+        try {
+            $this->handle = $this->prepare($query);
+            $this->handle->execute($bind);
+
+            // check what the query begins with
+            if (preg_match('/^(select|describe|pragma)/i', $query)) {
+                return $this->handle->fetchAll();
+            }
+
+            if (preg_match('/^(delete|insert|update)/i', $query)) {
+                return $this->handle->rowCount();
+            }
+            
+            return true;
+        } catch (PDOException $e) {
+            $this->error = $e->getMessage();
+            return false;
+        }
     }
 
     private function isValidTable($table) {
-    	return false;
+        $temp = ContentContract::TABLE;
+        return isset($temp[$table]);
+        return null !== ContentContract::TABLE[$table];
+    }
+
+    private function isValidColumn($table, $column) {
+        if (!isValidTable($table)) {
+            return false;
+        }
+
+        if (null !== ContentContract::SCHEMA[$table][$column]) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getLastInsertID() {
+        if($a=$this->run('SELECT LAST_INSERT_ID() as ID'))
+        {
+            return $a[0]['ID'];
+        }else{
+            return FALSE;
+        }
+    }
+
+    public function rowCount() {
+        return $this->dbh->rowCount();
+    }
+
+    public function getLastError() {
+        return $this->error;
     }
 }
