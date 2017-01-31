@@ -1,8 +1,6 @@
 <?php
 
-
 namespace DavidFricker\DataAbstracter;
-
 
 // declare final class?
 class ContentContract {
@@ -11,11 +9,11 @@ class ContentContract {
     const DATA_TYPE_DATETIME = 'datetime';
     
     const TABLE = [
-        'users' => 'table_user'
+        'customers' => 'customers'
     ];
 
     const SCHEMA = [
-        'users' => [
+        'customers' => [
             'id' => 'customerid',
             'email' => 'email',
             'password' => 'pass'
@@ -23,7 +21,7 @@ class ContentContract {
     ];
 
     const TYPE = [
-         'users' => [
+         'customers' => [
             'id' => self::DATA_TYPE_INT,
             'email' => self::DATA_TYPE_TEXT,
             'password' => self::DATA_TYPE_TEXT
@@ -31,4 +29,4 @@ class ContentContract {
     ];
 }
 
-var_dump(ContentContract::TABLE['users'], ContentContract::SCHEMA['users']['id'], ContentContract::TYPE['users']['id']);
+//var_dump(ContentContract::TABLE['customers'], ContentContract::SCHEMA['customers']['id'], ContentContract::TYPE['customers']['id']);
