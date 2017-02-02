@@ -1,0 +1,32 @@
+\hypertarget{test_8php}{}\section{D\+:/\+X\+A\+M\+P\+P/htdocs/\+Data\+Abstracter/src/test.php File Reference}
+\label{test_8php}\index{D\+:/\+X\+A\+M\+P\+P/htdocs/\+Data\+Abstracter/src/test.\+php@{D\+:/\+X\+A\+M\+P\+P/htdocs/\+Data\+Abstracter/src/test.\+php}}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{test_8php_ad52817a5e6420efa40ae5fdd053e4d5e}{\$\+D\+B\+Wrapper} = new \hyperlink{class_david_fricker_1_1_data_abstracter_1_1_my_s_q_l_database_wrapper}{My\+S\+Q\+L\+Database\+Wrapper}()
+\item 
+\hyperlink{test_8php_a112ef069ddc0454086e3d1e6d8d55d07}{\$result}
+\end{DoxyCompactItemize}
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{test_8php_ad52817a5e6420efa40ae5fdd053e4d5e}\label{test_8php_ad52817a5e6420efa40ae5fdd053e4d5e}} 
+\index{test.\+php@{test.\+php}!\$\+D\+B\+Wrapper@{\$\+D\+B\+Wrapper}}
+\index{\$\+D\+B\+Wrapper@{\$\+D\+B\+Wrapper}!test.\+php@{test.\+php}}
+\subsubsection{\texorpdfstring{\$\+D\+B\+Wrapper}{$DBWrapper}}
+{\footnotesize\ttfamily \$D\+B\+Wrapper = new \hyperlink{class_david_fricker_1_1_data_abstracter_1_1_my_s_q_l_database_wrapper}{My\+S\+Q\+L\+Database\+Wrapper}()}
+
+\mbox{\Hypertarget{test_8php_a112ef069ddc0454086e3d1e6d8d55d07}\label{test_8php_a112ef069ddc0454086e3d1e6d8d55d07}} 
+\index{test.\+php@{test.\+php}!\$result@{\$result}}
+\index{\$result@{\$result}!test.\+php@{test.\+php}}
+\subsubsection{\texorpdfstring{\$result}{$result}}
+{\footnotesize\ttfamily \$result}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+= \hyperlink{test_8php_ad52817a5e6420efa40ae5fdd053e4d5e}{$DBWrapper}->fetch(
+    ContentContract::TABLE[\textcolor{stringliteral}{'customers'}], 
+    \textcolor{stringliteral}{'Email'},
+    \textcolor{keyword}{false},
+    5)
+\end{DoxyCode}
