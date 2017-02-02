@@ -6,6 +6,6 @@ interface InterfaceDatabaseWrapper {
     public function insert($table, $data);
     public function delete($table, $where, $limit);
     public function update($table, $data, $where, $limit);
-    public function fetch($table, $columns, $where, $limit, $order);
+    public function fetch($table, $columns, $where, $limit);
     public function run($query);
 }
