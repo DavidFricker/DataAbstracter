@@ -16,7 +16,8 @@ class ContentContract {
         'customers' => [
             'id' => 'customerid',
             'email' => 'email',
-            'password' => 'pass'
+            'password' => 'pass',
+            'first_name' => 'fname',
         ]
     ];
 
@@ -24,7 +25,8 @@ class ContentContract {
          'customers' => [
             'id' => self::DATA_TYPE_INT,
             'email' => self::DATA_TYPE_TEXT,
-            'password' => self::DATA_TYPE_TEXT
+            'password' => self::DATA_TYPE_TEXT,
+            'first_name' => self::DATA_TYPE_TEXT,
         ]
     ];
 }
