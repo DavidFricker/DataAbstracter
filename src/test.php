@@ -34,11 +34,11 @@ $result = $DBWrapper->delete(
 	2);
 var_dump($result);
 
-*/
+
 
 $result = $DBWrapper->fetch(
 	ContentContract::TABLE['customers'], 
 	'Email',
 	false,
 	5);
-var_dump($result,$DBWrapper->rowCount());
+var_dump($result,$DBWrapper->rowCount());*/
