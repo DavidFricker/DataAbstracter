@@ -4,8 +4,5 @@
     "license": "MIT",
     "require":{
         "php":"^5.3.3 || ^7.0"
-    },
-    "psr-0": {
-        "DavidFricker/DataAbstracter": "src"
     }
 }
