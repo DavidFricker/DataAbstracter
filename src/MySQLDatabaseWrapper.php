@@ -184,15 +184,12 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
     }
 
     public function isValidColumn($table, $column) {
-        if (!isValidTable($table)) {
+        if (!$this->isValidTable($table)) {
             return false;
         }
 
-        if (null !== ContentContract::SCHEMA[$table][$column]) {
-            return false;
-        }
-
-        return true;
+        $temp = ContentContract::SCHEMA[$table];
+        return isset($temp[$column]);
     }
 
     // https://www.youtube.com/watch?v=JGf6TP6hZXc
