@@ -41,4 +41,4 @@ $result = $DBWrapper->fetch(
 	'Email',
 	false,
 	5);
-var_dump($result);
+var_dump($result,$DBWrapper->rowCount());
