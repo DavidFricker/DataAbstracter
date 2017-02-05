@@ -3,9 +3,7 @@ namespace DavidFricker\DataAbstracter;
 
 use \PDO;
 
-/*
-    
- */
+
 /**
   * A wrapper around a DB driver to expose a uniform interface
   *
