@@ -7,7 +7,7 @@
     },
     "autoload": {
         "psr-4": {
-            "DavidFricker\\DataAbstracter\\": "src"
+            "davidfricker\\dataabstracter\\": "src"
         }
     }
 }
