@@ -7,5 +7,6 @@
     },
     "psr-0": {
         "DavidFricker/DataAbstracter": "src"
-    }
+    },
+    "minimum-stability": "dev",
 }
