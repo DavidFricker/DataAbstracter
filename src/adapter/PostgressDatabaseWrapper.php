@@ -1,8 +1,7 @@
 <?php
-namespace DavidFricker\DataAbstracter;
+namespace DavidFricker\DataAbstracter\Adapter;
 
 use \PDO;
-
 
 /**
   * A wrapper around a DB driver to expose a uniform interface
