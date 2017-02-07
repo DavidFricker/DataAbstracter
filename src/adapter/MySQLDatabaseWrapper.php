@@ -96,7 +96,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
         }
 
         $bind_values = [];
-        $sql = 'SELECT '.$columns.' FROM `' . $table . '`';
+        $sql = 'SELECT ' . implode($columns, ', ') . ' FROM `' . $table . '`';
 
         if (is_array($where) && !empty($where)) {
             $sql .= ' WHERE ' . $this->prepareBinding($where, ' AND ');
