@@ -2,6 +2,7 @@
 namespace DavidFricker\DataAbstracter\Adapter;
 
 use \PDO;
+use DavidFricker\DataAbstracter\Interfaces\InterfaceDatabaseWrapper;
 
 /**
   * A wrapper around a DB driver to expose a uniform interface
@@ -137,7 +138,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
             }
             
             return true;
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $this->error = $e->getMessage();
             return false;
         }
