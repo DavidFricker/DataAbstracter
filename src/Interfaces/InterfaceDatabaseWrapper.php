@@ -1,5 +1,5 @@
 <?php
-namespace DavidFricker\DataAbstracter\Interface;
+namespace DavidFricker\DataAbstracter\Interfaces;
 
 // connection should be made in constructer
 interface InterfaceDatabaseWrapper {
