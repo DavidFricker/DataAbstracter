@@ -11,7 +11,7 @@ class AppContentProvider implements InterfaceContentProvider
     private $dsn = 'mysql:host=localhost;port=3306;dbname=apisaas';
     private $username = 'root';
     private $password = '';
-    private static $db_adapter;
+    private $db_adapter;
     private $ContentContract;
 
     private $options = array(
