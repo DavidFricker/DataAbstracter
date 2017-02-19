@@ -108,6 +108,10 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
             $sql .= ' LIMIT '. $limit; 
         }
 
+        if ($limit && is_array($limit)) { 
+            $sql .= ' LIMIT '. $limit[0] . ', ' . $limit[1]; 
+        }
+
         return $this->run($sql, $bind_values);
     }
 
@@ -134,7 +138,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
             }
 
             if (preg_match('/^(delete|insert|update)/i', $query)) {
-                return $this->handle->rowCount();
+                return $this->rowCount();
             }
             
             return true;
