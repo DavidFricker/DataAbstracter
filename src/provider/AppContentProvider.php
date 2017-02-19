@@ -56,7 +56,7 @@ class AppContentProvider implements InterfaceContentProvider
         }
 
         $result = $this->db_adapter->delete($table, $where, $limit);
-        if (!$result) {
+        if ($result === false) {
             throw new \InvalidArgumentException ($this->db_adapter->getLastError());
         }   
 
@@ -77,7 +77,7 @@ class AppContentProvider implements InterfaceContentProvider
         }
 
         $result = $this->db_adapter->update($table, $data, $where, $limit);
-        if (!$result) {
+        if ($result === false) {
             throw new \InvalidArgumentException ($this->db_adapter->getLastError());
         }   
 
@@ -99,7 +99,7 @@ class AppContentProvider implements InterfaceContentProvider
         }
 
         $result = $this->db_adapter->fetch($table, $columns, $where, $limit);
-        if (!$result) {
+        if ($result === false) {
             throw new \InvalidArgumentException ($this->db_adapter->getLastError());
         }   
 
