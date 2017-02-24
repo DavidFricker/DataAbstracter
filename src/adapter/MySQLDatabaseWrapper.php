@@ -22,10 +22,10 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
     //http://stackoverflow.com/questions/134099/are-pdo-prepared-statements-sufficient-to-prevent-sql-injection
     //ensure the data is sent in diff packets
     private $default_options = array(
-	            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
-	            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-	            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-	            PDO::ATTR_PERSISTENT => true,
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_PERSISTENT => true,
                 PDO::ATTR_EMULATE_PREPARES => false
             );
 
@@ -36,7 +36,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
 
         try {
             parent::__construct($dsn, $username, $password, $options);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $this->error = $e->getMessage();
         }
     }
@@ -161,24 +161,9 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
     }
 
     public function getLastError() {
-        return $this->error;
-    }
-/*
-    private function isValidTable($table) {
-        $temp = ContentContract::TABLE;
-        return isset($temp[$table]);
-        //return null !== ContentContract::TABLE[$table];
+        return $this->error_str;
     }
 
-    public function isValidColumn($table, $column) {
-        if (!$this->isValidTable($table)) {
-            return false;
-        }
-
-        $temp = ContentContract::SCHEMA[$table];
-        return isset($temp[$column]);
-    }
-*/
     // https://www.youtube.com/watch?v=JGf6TP6hZXc
     private function prepareBinding($rickross, $glue) {
         $chunks = [];
