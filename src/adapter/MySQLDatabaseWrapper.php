@@ -1,4 +1,5 @@
 <?php
+
 namespace DavidFricker\DataAbstracter\Adapter;
 
 use \PDO;
@@ -7,13 +8,9 @@ use DavidFricker\DataAbstracter\Interfaces\InterfaceDatabaseWrapper;
 /**
   * A wrapper around a DB driver to expose a uniform interface
   *
-  * Bassically an abstraction over the complexity of the PDO class, but by design this could wrap any strctured storage mechanism 
-  * A database engine adapter
+  * Basically an abstraction over the complexity of the PDO class, but by design this could wrap any structured storage mechanism 
+  * In addition, this class provides helper functions to make common queries quick and simple to perform
   *
-  * @param string $myArgument With a *description* of this argument, these may also
-  *    span multiple lines.
-  *
-  * @return void
   */
 class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
     private $handle;
@@ -22,30 +19,41 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
     //http://stackoverflow.com/questions/134099/are-pdo-prepared-statements-sufficient-to-prevent-sql-injection
     //ensure the data is sent in diff packets
     private $default_options = array(
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
+                //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_PERSISTENT => true,
                 PDO::ATTR_EMULATE_PREPARES => false
             );
 
+    /**
+     * Wrapper constructor
+     *
+     * @throws PDOException if the database connection cannot be opened
+     * @param string $dsn      dsn for PDO
+     * @param string $username MySQL username
+     * @param string $password MySQL password
+     * @param array $options  PDO options, defaults provided
+     */
     public function __construct($dsn, $username, $password, $options=null) {
         if($options == null) {
-            $options = $default_options;
+            $options = $this->default_options;
         }
 
-        try {
-            parent::__construct($dsn, $username, $password, $options);
-        } catch (\PDOException $e) {
-            $this->error = $e->getMessage();
-        }
+        parent::__construct($dsn, $username, $password, $options);
     }
 
-    /*
-        NB: As this is intented to be a simple helper function the only 'glue' to hold togther the where clasues is 'AND' 
-        more complex update statments should be performed using run()
+    /**
+     * Remove one or more rows
+     *
+     * As this is intended to be a simple helper function the only 'glue' to hold together the where clauses is 'AND' more complex delete statements should be performed using run()
+     * 
+     * @param  string $table name of table in the database
+     * @param  array  $where optional, key:value pairs - column and expected value to filter by 
+     * @param  boolean $limit optional, integer describing the amount of matching rows to delete
+     * @return mixed see return value of run
      */
-    public function delete($table, $where, $limit) {       
+    public function delete($table, $where=[], $limit=false) {       
         $sql= '';
         if ($limit && is_int($limit)) { 
             $sql .= ' LIMIT '. $limit; 
@@ -62,11 +70,18 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
         return $this->run($sql, $bind_values);
     }
 
-    /*
-        NB: As this is intented to be a simple helper function the only 'glue' to hold togther the where clasues is 'AND' 
-        more complex update statments should be performed using run()
+    /**
+     * Update one or more rows
+     *
+     * As this is intended to be a simple helper function the only 'glue' to hold together the where clauses is 'AND' more complex update statements should be performed using run()
+     * 
+     * @param  string $table name of table in the database
+     * @param  array $data  key:value pairs, key is the column and value is the new value for each affected row
+     * @param  array $where optional, key:value pairs - column and expected value to filter by 
+     * @param  boolean $limit optional, integer describing the amount of matching rows to update
+     * @return mixed see return value of run
      */
-    public function update($table, $data, $where, $limit=false) {
+    public function update($table, $data, $where=[], $limit=false) {
         if (!is_array($data) || empty($data)) {
             return false;
         }
@@ -86,12 +101,19 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
         return $this->run($sql, $bind_values);
     }
 
-    /*
-        Important: Ensure the $columns var does not contain user input as it is inserted as-is into the statement - vulnrable to SQL injection 
-        NB: As this is intented to be a simple helper function the only 'glue' to hold togther the where clasues is 'AND' 
-        more complex update statments should be performed using run()
+    /**
+     * Pull one or more rows
+     *
+     * As this is intended to be a simple helper function the only 'glue' to hold together the where clauses is 'AND' more complex update statements should be performed using run()
+     * IMPORTANT: Ensure the $columns variable does not contain user input as it is inserted as-is into the statement - vulnerable to SQL injection 
+     * 
+     * @param  string $table name of table in the database
+     * @param  array $data  key:value pairs, key is the column and value is the new value for each affected row
+     * @param  array $where optional, key:value pairs - column and expected value to filter by 
+     * @param  boolean $limit optional, integer describing the amount of matching rows to fetch
+     * @return mixed see return value of run
      */
-    public function fetch($table, $columns, $where=false, $limit=false) {
+    public function fetch($table, $columns, $where=[], $limit=false) {
         if (empty($columns)) {
             return false;
         }
@@ -115,6 +137,13 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
         return $this->run($sql, $bind_values);
     }
 
+    /**
+     * Create a new row
+     * 
+     * @param  string $table name of table in the database
+     * @param  array $data  key:value pairs, key is the column and value is the value to set for the new row
+     * @return mixed see return value of run
+     */
     public function insert($table, $data) {
         if (!is_array($data)) {
             return false;
@@ -127,20 +156,34 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
         return $this->run($query, $bind_values);
     }
     
-    public function run($query, $bind=[]) {
+    /**
+     * Execute any SQL query
+     *
+     * To ensure your query is safe from first order SQL injection attacks pass all values via the $bind array
+     * 
+     * @param  string $query MySQL query
+     * @param  [type] $bind  key:value pairs where the key is a bind identifier and value is to be inserted at that location
+     * @return mixed see example
+     * @example depending on the type of input query the returned result can be an affected row count or a result set, the type of which is specified in the options passed to the constructor, defaulting to an assoc array
+     * @example $query = 'SELECT * FROM table_name WHERE col_id = :BindColID'; $bind = [':BindColID' => 12];
+     */
+    public function run ($query, $bind=[]) {
         try {
             $this->handle = $this->prepare($query);
             $this->handle->execute($bind);
 
             // check what the query begins with
             if (preg_match('/^(select|describe|pragma)/i', $query)) {
+                // return a result set
                 return $this->handle->fetchAll();
             }
 
             if (preg_match('/^(delete|insert|update)/i', $query)) {
+                // return the affected row count
                 return $this->rowCount();
             }
             
+            // default to simply indicating success
             return true;
         } catch (\PDOException $e) {
             $this->error = $e->getMessage();
@@ -148,29 +191,62 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
         }
     }
 
+    /**
+     * Fetches the Row ID for the last inserted record
+     * 
+     * @return int Returns the integer ID of the last inserted row
+     */
     public function getLastInsertID() {
         if ($a=$this->run('SELECT LAST_INSERT_ID() as ID')) {
             return $a[0]['ID'];
         }else{
-            return FALSE;
+            return false;
         }
     }
 
+    /**
+     * Fetch the number of rows returned from previous query
+     * 
+     * @return int affected row count of last query
+     */
     public function rowCount() {
         return $this->handle->rowCount();
     }
 
+    /**
+     * Fetch last error message
+     * 
+     * @return string last caught message from a PDO exception
+     */
     public function getLastError() {
         return $this->error_str;
     }
 
-    // https://www.youtube.com/watch?v=JGf6TP6hZXc
-    private function prepareBinding($rickross, $glue) {
-        $chunks = [];
-        foreach (array_keys($rickross) as $column) { 
-            $chunks[] = '`' . $column . '` = ?'; 
+    /**
+     * Make keyv:value pairs SQL safe
+     *
+     * Separates out the indexes of the data to transmit to the DB (the column names) to return a safe raw SQL query fragment
+     * 
+     * @param  string $data key:value pairs of column:data structure
+     * @param  string $glue to be put in-between each column:data pair in the result
+     * @return string final SQL fragment, injection safe as long as the keys in $data are safe
+     */
+    private function prepareBinding($data, $glue) {
+        $binding = '';
+        foreach (array_keys($data) as $column_name) { 
+            $binding .= '`' . $column_name . '` = ? '.$glue; 
         }
 
-        return implode($glue, $chunks);
+        return rtrim($binding, $glue);
     }
+    
+    /*
+    public function beginTransaction() {
+        return $this->beginTransaction();
+    }
+
+    public function rollBack() {
+        return $this->rollBack();
+    }
+    */
 }
