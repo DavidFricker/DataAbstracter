@@ -57,7 +57,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
      * @param  boolean $limit optional, integer describing the amount of matching rows to delete
      * @return mixed see return value of run
      */
-    public function delete($table, $where, $limit) {       
+    public function delete($table, $where=[], $limit=false) {       
         $sql= '';
         if ($limit && is_int($limit)) { 
             $sql .= ' LIMIT '. $limit; 
@@ -85,7 +85,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
      * @param  boolean $limit optional, integer describing the amount of matching rows to update
      * @return mixed see return value of run
      */
-    public function update($table, $data, $where, $limit=false) {
+    public function update($table, $data, $where=[], $limit=false) {
         if (!is_array($data) || empty($data)) {
             return false;
         }
@@ -117,7 +117,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
      * @param  boolean $limit optional, integer describing the amount of matching rows to fetch
      * @return mixed see return value of run
      */
-    public function fetch($table, $columns, $where=false, $limit=false) {
+    public function fetch($table, $columns, $where=[], $limit=false) {
         if (empty($columns)) {
             return false;
         }
@@ -160,7 +160,6 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
         return $this->run($query, $bind_values);
     }
     
-    public function run($query, $bind=[]) {
     /**
      * Execute any SQL query
      *
