@@ -37,14 +37,10 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
      */
     public function __construct($dsn, $username, $password, $options=null) {
         if($options == null) {
-            $options = $default_options;
+            $options = $this->default_options;
         }
 
-        try {
-            parent::__construct($dsn, $username, $password, $options);
-        } catch (\PDOException $e) {
-            $this->error = $e->getMessage();
-        }
+        parent::__construct($dsn, $username, $password, $options);
     }
 
     /**
@@ -241,5 +237,16 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
             $binding .= '`' . $column_name . '` = ? '.$glue; 
         }
 
+        return rtrim($binding, $glue);
     }
+    
+    /*
+    public function beginTransaction() {
+        return $this->beginTransaction();
+    }
+
+    public function rollBack() {
+        return $this->rollBack();
+    }
+    */
 }
