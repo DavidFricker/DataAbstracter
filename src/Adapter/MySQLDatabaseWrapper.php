@@ -178,13 +178,16 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
 
             // check what the query begins with
             if (preg_match('/^(select|describe|pragma)/i', $query)) {
+                // return a result set
                 return $this->handle->fetchAll();
             }
 
             if (preg_match('/^(delete|insert|update)/i', $query)) {
+                // return the affected row count
                 return $this->rowCount();
             }
             
+            // default to simply indicating success
             return true;
         } catch (\PDOException $e) {
             $this->error = $e->getMessage();
