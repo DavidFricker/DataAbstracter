@@ -223,11 +223,6 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
         return $this->error_str;
     }
 
-    // https://www.youtube.com/watch?v=JGf6TP6hZXc
-    private function prepareBinding($rickross, $glue) {
-        $chunks = [];
-        foreach (array_keys($rickross) as $column) { 
-            $chunks[] = '`' . $column . '` = ?'; 
     /**
      * Make keyv:value pairs SQL safe
      *
@@ -243,6 +238,5 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
             $binding .= '`' . $column_name . '` = ? '.$glue; 
         }
 
-        return implode($glue, $chunks);
     }
 }
