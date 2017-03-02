@@ -1,4 +1,5 @@
 <?php
+
 namespace DavidFricker\DataAbstracter\Adapter;
 
 use \PDO;
@@ -201,7 +202,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
         if ($a=$this->run('SELECT LAST_INSERT_ID() as ID')) {
             return $a[0]['ID'];
         }else{
-            return FALSE;
+            return false;
         }
     }
 
