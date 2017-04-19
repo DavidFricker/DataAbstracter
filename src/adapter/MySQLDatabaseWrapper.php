@@ -19,7 +19,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
     //http://stackoverflow.com/questions/134099/are-pdo-prepared-statements-sufficient-to-prevent-sql-injection
     //ensure the data is sent in diff packets
     private $default_options = array(
-                //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_PERSISTENT => true,
