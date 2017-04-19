@@ -16,8 +16,6 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
     private $handle;
     private $error_str = '';
 
-    //http://stackoverflow.com/questions/134099/are-pdo-prepared-statements-sufficient-to-prevent-sql-injection
-    //ensure the data is sent in diff packets
     private $default_options = array(
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -36,7 +34,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
      * @param array $options  PDO options, defaults provided
      */
     public function __construct($dsn, $username, $password, $options=null) {
-        if($options == null) {
+        if ($options == null) {
             $options = $this->default_options;
         }
 
@@ -162,7 +160,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
      * To ensure your query is safe from first order SQL injection attacks pass all values via the $bind array
      * 
      * @param  string $query MySQL query
-     * @param  [type] $bind  key:value pairs where the key is a bind identifier and value is to be inserted at that location
+     * @param  array $bind  key:value pairs where the key is a bind identifier and value is to be inserted at that location
      * @return mixed see example
      * @example depending on the type of input query the returned result can be an affected row count or a result set, the type of which is specified in the options passed to the constructor, defaulting to an assoc array
      * @example $query = 'SELECT * FROM table_name WHERE col_id = :BindColID'; $bind = [':BindColID' => 12];
@@ -199,7 +197,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
     public function getLastInsertID() {
         if ($a=$this->run('SELECT LAST_INSERT_ID() as ID')) {
             return $a[0]['ID'];
-        }else{
+        } else {
             return false;
         }
     }
@@ -223,7 +221,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
     }
 
     /**
-     * Make keyv:value pairs SQL safe
+     * Make key:value pairs SQL safe
      *
      * Separates out the indexes of the data to transmit to the DB (the column names) to return a safe raw SQL query fragment
      * 
