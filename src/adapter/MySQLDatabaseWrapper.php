@@ -10,6 +10,7 @@ use DavidFricker\DataAbstracter\Interfaces\InterfaceDatabaseWrapper;
   *
   * Basically an abstraction over the complexity of the PDO class, but by design this could wrap any structured storage mechanism 
   * In addition, this class provides helper functions to make common queries quick and simple to perform
+  *
   */
 class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
     private $handle;
@@ -51,17 +52,18 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
      * @return mixed see return value of run
      */
     public function delete($table, $where=[], $limit=false) {       
-        $bind_values = [];
-        $sql = 'DELETE FROM `' . $table . '`';
-
-        if (is_array($where) && !empty($where)) {
-            $bind_values = array_values($where);
-            $sql .= ' WHERE ' . $this->prepareBinding($where, ' AND ');
-        }
-
+        $sql= '';
         if ($limit && is_int($limit)) { 
             $sql .= ' LIMIT '. $limit; 
         }
+
+        if (!is_array($where) || empty($where)) {
+            $sql = 'DELETE FROM `' . $table . '`'.$sql;
+            return $this->run($sql, []);
+        }
+
+        $bind_values = array_values($where);
+        $sql = 'DELETE FROM  `' . $table . '` WHERE ' . $this->prepareBinding($where, ' AND ').$sql;
 
         return $this->run($sql, $bind_values);
     }
@@ -72,7 +74,7 @@ class MySQLDatabaseWrapper extends \PDO implements InterfaceDatabaseWrapper {
      * As this is intended to be a simple helper function the only 'glue' to hold together the where clauses is 'AND' more complex update statements should be performed using run()
      * 
      * @param  string $table name of table in the database
-     * @param  array $data key:value pairs, key is the column and value is the new value for each affected row
+     * @param  array $data  key:value pairs, key is the column and value is the new value for each affected row
      * @param  array $where optional, key:value pairs - column and expected value to filter by 
      * @param  boolean $limit optional, integer describing the amount of matching rows to update
      * @return mixed see return value of run
